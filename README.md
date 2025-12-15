@@ -29,47 +29,77 @@ Modern MCP server + browser extensions for reliable, multi‑instance automation
 - Node.js 20+
 - Chrome or Firefox
 - Claude Code
-- Also works with WSL2 and Windows Chrome
+- macOS or Linux
 
 ### Installation
 
-#### Step 1 - Deploy Script
-  ```bash
-  git clone https://github.com/david-strejc/browsermcp-enhanced.git
-  cd browsermcp-enhanced
-  ./scripts/deploy
-  ```
+#### macOS
 
-#### Step 2 - install systemd services (HTTP + WS daemon):
+```bash
+git clone https://github.com/rynfar/laskobot.git
+cd laskobot
+./scripts/macos/install.sh
+```
 
-  - **Option A: User services (recommended for nvm users, no sudo required):**
-      ```bash
-      ./scripts/systemd-user-install.sh
-      ```
+This installs a launchd service that auto-starts on login.
 
-  - **Option B: System services (requires sudo):**
-      ```bash
-      sudo ./scripts/systemd-install.sh --user "$USER" \
-        --install-dir "/home/$USER/.local/lib/browsermcp-enhanced" \
-        --http-port 3000 --ws-port 8765
-      ```
+**Management commands:**
+```bash
+# Stop
+launchctl unload ~/Library/LaunchAgents/com.laskobot.daemon.plist
 
-#### Step 3 - **Load extension (one browser at a time):**
+# Start
+launchctl load ~/Library/LaunchAgents/com.laskobot.daemon.plist
+
+# Restart
+launchctl kickstart -k gui/$(id -u)/com.laskobot.daemon
+
+# View logs
+tail -f /tmp/laskobot.log
+
+# Uninstall
+./scripts/macos/uninstall.sh
+```
+
+#### Linux
+
+```bash
+git clone https://github.com/rynfar/laskobot.git
+cd laskobot
+./scripts/deploy
+```
+
+Then install systemd services:
+
+- **User services (recommended):**
+    ```bash
+    ./scripts/systemd-user-install.sh
+    ```
+
+- **System services (requires sudo):**
+    ```bash
+    sudo ./scripts/systemd-install.sh --user "$USER" \
+      --install-dir "/home/$USER/.local/lib/browsermcp-enhanced" \
+      --http-port 3000 --ws-port 8765
+    ```
+
+#### Load Browser Extension
 
 - Chrome: `chrome://extensions` → Developer mode → Load unpacked → `chrome-extension/`
 - Firefox: `about:debugging#/runtime/this-firefox` → Load Temporary Add‑on → `firefox-extension/manifest.json`
 
-#### Step 4 - **Configure MCP**
-  ```json
-    {
-      "mcpServers": {
-        "browsermcp": {
-          "type": "http",
-          "url": "http://127.0.0.1:3000/mcp"
-        }
-      }
+#### Configure Claude Code MCP
+
+```json
+{
+  "mcpServers": {
+    "laskobot": {
+      "type": "http",
+      "url": "http://127.0.0.1:3000/mcp"
     }
-  ```
+  }
+}
+```
 
 **For detailed architecture and troubleshooting information, see [ADVANCE_INFO.md](docs/ADVANCE_INFO.md)**
 

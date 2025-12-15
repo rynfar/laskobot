@@ -21,8 +21,7 @@
     "tab-management",
     "element-selection"
   ],
-  "type": "module",
-  "bin": {
+    "bin": {
     "mcp-server-browsermcp-enhanced": "dist/index.js",
     "mcp-server-browsermcp-enhanced-http": "dist/index-http.js",
     "mcp-server-browsermcp-enhanced-multi": "dist/index-multi.js",
